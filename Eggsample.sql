@@ -110,7 +110,7 @@ insert into STATION values('Callao', 'Y', 'N');
 
 --yellow
 insert into STATION values('Moncloa', 'Y', 'N');
-insert into STATION values('Plaza España', 'Y', 'Y');
+insert into STATION values('Plaza EspaÃ±a', 'Y', 'Y');
 insert into STATION values('Legazpi', 'Y', 'N');
 
 
@@ -126,7 +126,7 @@ insert into BE_COMPOUND_OF values('green', 'Gran Via', 14);
 
 
 insert into BE_COMPOUND_OF values('yellow', 'Moncloa', 1);
-insert into BE_COMPOUND_OF values('yellow', 'Plaza España', 4);
+insert into BE_COMPOUND_OF values('yellow', 'Plaza EspaÃ±a', 4);
 insert into BE_COMPOUND_OF values('yellow', 'Legazpi', 11);
 insert into BE_COMPOUND_OF values('yellow', 'Sol', 6);
 insert into BE_COMPOUND_OF values('yellow', 'Callao', 5);
@@ -189,3 +189,5 @@ ORDER BY COUNT(*);
 --Some other things
 --We can rename the attribute in the output using 'as':
 SELECT COLOUR, LNAME as LineName FROM LINE WHERE colour='blue' OR LNAME='5'
+
+--Honestly, just check the commands and what they do. :/
