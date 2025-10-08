@@ -19,8 +19,7 @@ CREATE TABLE Membership (
 	AppUserId NUMBER NOT NULL,
 	AppGroupId NUMBER NOT NULL,
 	JoiningDate DATE NOT NULL,
-	--Here we need a domain
-	MemberRole VARCHAR2(30) NOT NULL,
+	MemberRole VARCHAR2(30) NOT NULL CHECK (MemberRole IN ('Owner', 'Admin', 'Member')),
 	LeavingDate DATE,
 	constraint Membership_PK PRIMARY KEY (AppUserId, AppGroupId));
 
@@ -32,8 +31,7 @@ CREATE TABLE Expense (
 	CurrencyId NUMBER NOT NULL,
 	ExpenseDate DATE NOT NULL,
 	RegistrationDate DATE NOT NULL,
-	--Here we need a domain
-	DivisionType VARCHAR2(30) NOT NULL,
+	DivisionType VARCHAR2(30) NOT NULL DEFAULT Equal CHECK (DivisionType IN ('Equal', 'Shared', 'Exact')),
 	CategoryId NUMBER NOT NULL,
 	constraint Expense_PK PRIMARY KEY (ExpenseId));
 
@@ -81,8 +79,7 @@ CREATE TABLE Notification (
 	RecipientId NUMBER NOT NULL,
 	NotificationText VARCHAR2(30) NOT NULL,
 	NotificationTime TIMESTAMP NOT NULL,
-  --Here we need a domain (I don't think we are supposed to use booleans)
-	IsRead CHAR(1) NOT NULL,
+	IsRead CHAR(1) NOT NULL CHECK (IsRead IN ('Y', 'N')),
 	constraint Notification_PK PRIMARY KEY (NotificationId))
 
 CREATE TABLE MessageGroup (
@@ -102,6 +99,8 @@ CREATE TABLE MessagePrivate (
 	MessageTime TIMESTAMP NOT NULL,
 	constraint MessagePrivate_PK PRIMARY KEY (MessagePrivateId))
 
+
+--Add foreign keys
 ALTER TABLE AppGroup ADD CONSTRAINT AppGroup_fk0 FOREIGN KEY (BaseCurrencyId) REFERENCES Currency(CurrencyId);
 
 ALTER TABLE Membership ADD CONSTRAINT Membership_fk0 FOREIGN KEY (AppUserId) REFERENCES AppUser(AppUserId);
