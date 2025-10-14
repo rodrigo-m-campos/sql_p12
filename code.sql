@@ -3,7 +3,7 @@ CREATE TABLE AppUser (
 	AppUserId NUMBER NOT NULL,
 	FirstName VARCHAR2(30) NOT NULL,
 	LastName VARCHAR2(30) NOT NULL,
-	Alias VARCHAR2(30),
+	'Alias' VARCHAR2(30),
 	Phone VARCHAR2(30),
 	constraint AppUser_PK PRIMARY KEY (AppUserId));
 
@@ -31,9 +31,10 @@ CREATE TABLE Expense (
 	CurrencyId NUMBER NOT NULL,
 	ExpenseDate DATE NOT NULL,
 	RegistrationDate DATE NOT NULL,
-	DivisionType VARCHAR2(30) NOT NULL DEFAULT Equal CHECK (DivisionType IN ('Equal', 'Shared', 'Exact')),
+	DivisionType VARCHAR2(30) NOT NULL DEFAULT ('Equal'),
 	CategoryId NUMBER NOT NULL,
-	constraint Expense_PK PRIMARY KEY (ExpenseId));
+	constraint Expense_PK PRIMARY KEY (ExpenseId)
+	constraint CH_Division CHECK (DivisionType IN ('Equal', 'Shared', 'Exact')));
 
 CREATE TABLE ParticipationExpense (
 	ExpenseId NUMBER NOT NULL,
@@ -42,7 +43,7 @@ CREATE TABLE ParticipationExpense (
 	Amount NUMBER(10,2) NOT NULL,
 	constraint ParticipationExpense_PK PRIMARY KEY (ExpenseId, AppUserId, AppGroupId));
 
-CREATE TABLE Category (
+CREATE TABLE 'Category' (
 	CategoryId NUMBER NOT NULL,
 	AppGroupId NUMBER NOT NULL,
 	CategoryName VARCHAR(30) NOT NULL,
@@ -59,7 +60,7 @@ CREATE TABLE ExchangeRate (
 	CurrencyTo NUMBER NOT NULL,
 	ExchangeDate DATE NOT NULL,
 	--Here we should determine decimals (or try a different solution)
-	Rate NUMBER(2)
+	Rate NUMBER(10,2),
 	constraint ExchangeRate_PK PRIMARY KEY (RateId));
 
 CREATE TABLE Payment (
@@ -67,7 +68,7 @@ CREATE TABLE Payment (
 	PayerId NUMBER NOT NULL,
 	PayeeId NUMBER NOT NULL,
 	AppGroupId NUMBER NOT NULL,
-	Amount NUMBER(2) NOT NULL,
+	Amount NUMBER(10,2) NOT NULL,
 	CurrencyId NUMBER NOT NULL,
 	PaymentDate DATE NOT NULL,
 	Note VARCHAR2(30),
@@ -80,7 +81,7 @@ CREATE TABLE Notification (
 	NotificationText VARCHAR2(30) NOT NULL,
 	NotificationTime TIMESTAMP NOT NULL,
 	IsRead CHAR(1) NOT NULL CHECK (IsRead IN ('Y', 'N')),
-	constraint Notification_PK PRIMARY KEY (NotificationId))
+	constraint Notification_PK PRIMARY KEY (NotificationId));
 
 CREATE TABLE MessageGroup (
 	MessageGroupId NUMBER NOT NULL,
@@ -88,7 +89,7 @@ CREATE TABLE MessageGroup (
 	SenderId NUMBER NOT NULL,
 	MessageText VARCHAR2(30) NOT NULL,
 	MessageTime TIMESTAMP NOT NULL,
-	constraint MessageGroup_PK PRIMARY KEY (MessageGroupId))
+	constraint MessageGroup_PK PRIMARY KEY (MessageGroupId));
 
 CREATE TABLE MessagePrivate (
 	MessagePrivateId NUMBER NOT NULL,
@@ -97,7 +98,7 @@ CREATE TABLE MessagePrivate (
 	RecipientId NUMBER NOT NULL,
 	MessageText VARCHAR2(30) NOT NULL,
 	MessageTime TIMESTAMP NOT NULL,
-	constraint MessagePrivate_PK PRIMARY KEY (MessagePrivateId))
+	constraint MessagePrivate_PK PRIMARY KEY (MessagePrivateId));
 
 
 --Add foreign keys
@@ -106,8 +107,8 @@ ALTER TABLE AppGroup ADD CONSTRAINT AppGroup_fk0 FOREIGN KEY (BaseCurrencyId) RE
 ALTER TABLE Membership ADD CONSTRAINT Membership_fk0 FOREIGN KEY (AppUserId) REFERENCES AppUser(AppUserId);
 ALTER TABLE Membership ADD CONSTRAINT Membership_fk1 FOREIGN KEY (AppGroupId) REFERENCES AppGroup(AppGroupId);
 
-ALTER TABLE Expense ADD CONSTRAINT Expense_fk0 FOREIGN KEY (AppUserId) REFERENCES Membership(AppUserId);
-ALTER TABLE Expense ADD CONSTRAINT Expense_fk1 FOREIGN KEY (AppGroupId) REFERENCES Membership(AppGroupId);
+ALTER TABLE Expense ADD CONSTRAINT Expense_fk0 FOREIGN KEY (AppUserId, AppGroupId) REFERENCES Membership(AppUserId, AppGroupId);
+--ALTER TABLE Expense ADD CONSTRAINT Expense_fk1 FOREIGN KEY (AppGroupId) REFERENCES Membership(AppGroupId);
 ALTER TABLE Expense ADD CONSTRAINT Expense_fk2 FOREIGN KEY (CurrencyId) REFERENCES Currency(CurrencyId);
 ALTER TABLE Expense ADD CONSTRAINT Expense_fk3 FOREIGN KEY (CategoryId) REFERENCES Category(CategoryId);
 
@@ -115,7 +116,7 @@ ALTER TABLE ParticipationExpense ADD CONSTRAINT ParticipationExpense_fk0 FOREIGN
 --ALTER TABLE ParticipationExpense ADD CONSTRAINT ParticipationExpense_fk1 FOREIGN KEY (AppGroupId) REFERENCES Membership(AppGroupId);
 ALTER TABLE ParticipationExpense ADD CONSTRAINT ParticipationExpense_fk2 FOREIGN KEY (ExpenseId) REFERENCES Expense(ExpenseId);
 
-ALTER TABLE Category ADD CONSTRAINT Category_fk0 FOREIGN KEY (AppGroupId) REFERENCES AppGroup(AppGroupId);
+ALTER TABLE 'Category' ADD CONSTRAINT Category_fk0 FOREIGN KEY (AppGroupId) REFERENCES AppGroup(AppGroupId);
 
 ALTER TABLE ExchangeRate ADD CONSTRAINT ExchangeRate_fk0 FOREIGN KEY (CurrencyFrom) REFERENCES Currency(CurrencyId);
 ALTER TABLE ExchangeRate ADD CONSTRAINT ExchangeRate_fk1 FOREIGN KEY (CurrencyTo) REFERENCES Currency(CurrencyId);
@@ -240,26 +241,26 @@ INSERT INTO Membership (AppUserId, AppGroupId, JoiningDate, MemberRole, LeavingD
 INSERT INTO Membership (AppUserId, AppGroupId, JoiningDate, MemberRole, LeavingDate) VALUES (104, 201, TO_DATE('2023-02-25','YYYY-MM-DD'), 'Member', NULL);
 INSERT INTO Membership (AppUserId, AppGroupId, JoiningDate, MemberRole, LeavingDate) VALUES (106, 202, TO_DATE('2023-03-15','YYYY-MM-DD'), 'Member', NULL);
 ---CATEGORY
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (301, 201, 'Groceries');
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (302, 201, 'Utilities');
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (303, 201, 'Rent');
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (304, 202, 'Travel');
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (305, 202, 'Dining');
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (306, 202, 'Entertainment');
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (307, 203, 'Office Supplies');
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (308, 203, 'Client Entertainment');
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (309, 204, 'Flights');			
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (310, 204, 'Accommodation');			
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (311, 204, 'Food');			
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (312, 205, 'Flights');			
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (313, 205, 'Accommodation');			
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (314, 205, 'Food');			
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (315,206, 'Dining');			
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (316,206, 'Entertainment');			
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (317,207, 'Rent');			
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (318,207, 'Utilities');			
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (319,208, 'Ski Passes');			
-INSERT INTO Category (CategoryId, AppGroupId, CategoryName) VALUES (320,208, 'Accommodation');
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (301, 201, 'Groceries');
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (302, 201, 'Utilities');
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (303, 201, 'Rent');
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (304, 202, 'Travel');
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (305, 202, 'Dining');
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (306, 202, 'Entertainment');
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (307, 203, 'Office Supplies');
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (308, 203, 'Client Entertainment');
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (309, 204, 'Flights');			
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (310, 204, 'Accommodation');			
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (311, 204, 'Food');			
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (312, 205, 'Flights');			
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (313, 205, 'Accommodation');			
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (314, 205, 'Food');			
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (315,206, 'Dining');			
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (316,206, 'Entertainment');			
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (317,207, 'Rent');			
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (318,207, 'Utilities');			
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (319,208, 'Ski Passes');			
+INSERT INTO 'Category' (CategoryId, AppGroupId, CategoryName) VALUES (320,208, 'Accommodation');
 ---EXPENSE
 INSERT INTO Expense (ExpenseId, AppUserId, AppGroupId, Amount, CurrencyId, ExpenseDate, RegistrationDate, DivisionType, CategoryId) VALUES (401, 101, 201, 150.00, 1, TO_DATE('2023-01-16','YYYY-MM-DD'), TO_DATE('2023-01-16','YYYY-MM-DD'), 'Equal', 301);
 INSERT INTO Expense (ExpenseId, AppUserId, AppGroupId, Amount, CurrencyId, ExpenseDate, RegistrationDate, DivisionType, CategoryId) VALUES (402, 102, 201, 75.00, 1, TO_DATE('2023-01-21','YYYY-MM-DD'), TO_DATE('2023-01-21','YYYY-MM-DD'), 'Shared', 302);
@@ -337,6 +338,7 @@ INSERT INTO MessageGroup (MessageGroupId, AppGroupId, SenderId, MessageText, Mes
 INSERT INTO MessageGroup (MessageGroupId, AppGroupId, SenderId, MessageText, MessageTime) VALUES (709, 209, 111, 'Gym session tomorrow?', SYSTIMESTAMP);
 INSERT INTO MessageGroup (MessageGroupId, AppGroupId, SenderId, MessageText, MessageTime) VALUES (710, 210, 107, 'Summer trip planning!', SYSTIMESTAMP);
 --MESSAGEPRIVATE
+--Add AppGroupId
 INSERT INTO MessagePrivate (MessagePrivateId, SenderId, RecipientId, MessageText, MessageTime) VALUES (801, 101, 102, 'Hey Jimmy, can you pay me back ASAP?', SYSTIMESTAMP);
 INSERT INTO MessagePrivate (MessagePrivateId, SenderId, RecipientId, MessageText, MessageTime) VALUES (802, 102, 101, 'Hi Mohammed, I am good thank You.', SYSTIMESTAMP);
 INSERT INTO MessagePrivate (MessagePrivateId, SenderId, RecipientId, MessageText, MessageTime) VALUES (803, 103, 104, 'Mel here, ready for the trip?', SYSTIMESTAMP);
