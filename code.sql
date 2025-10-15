@@ -6,7 +6,7 @@ CREATE TABLE AppUser (
 	'Alias' VARCHAR2(30),
 	Phone VARCHAR2(30),
 	constraint AppUser_PK PRIMARY KEY (AppUserId));
-
+-- Test
 CREATE TABLE AppGroup (
 	AppGroupId NUMBER NOT NULL,
 	GroupName VARCHAR2(30) NOT NULL,
