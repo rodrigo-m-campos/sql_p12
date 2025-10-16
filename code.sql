@@ -78,7 +78,7 @@ CREATE TABLE Notification (
 	NotificationId NUMBER NOT NULL,
 	PaymentId NUMBER NOT NULL,
 	RecipientId NUMBER NOT NULL,
-	NotificationText VARCHAR2(30) NOT NULL,
+	NotificationText VARCHAR2(300) NOT NULL,
 	NotificationTime TIMESTAMP NOT NULL,
 	IsRead CHAR(1) NOT NULL CHECK (IsRead IN ('Y', 'N')),
 	constraint Notification_PK PRIMARY KEY (NotificationId));
@@ -87,7 +87,7 @@ CREATE TABLE MessageGroup (
 	MessageGroupId NUMBER NOT NULL,
 	AppGroupId NUMBER NOT NULL,
 	SenderId NUMBER NOT NULL,
-	MessageText VARCHAR2(30) NOT NULL,
+	MessageText VARCHAR2(300) NOT NULL,
 	MessageTime TIMESTAMP NOT NULL,
 	constraint MessageGroup_PK PRIMARY KEY (MessageGroupId));
 
@@ -96,7 +96,7 @@ CREATE TABLE MessagePrivate (
 	AppGroupId NUMBER NOT NULL,
 	SenderId NUMBER NOT NULL,
 	RecipientId NUMBER NOT NULL,
-	MessageText VARCHAR2(30) NOT NULL,
+	MessageText VARCHAR2(300) NOT NULL,
 	MessageTime TIMESTAMP NOT NULL,
 	constraint MessagePrivate_PK PRIMARY KEY (MessagePrivateId));
 
@@ -351,3 +351,32 @@ INSERT INTO MessagePrivate (MessagePrivateId, SenderId, RecipientId, MessageText
 INSERT INTO MessagePrivate (MessagePrivateId, SenderId, RecipientId, MessageText, MessageTime) VALUES (810, 110, 109, 'Rodrigo, yes I did.', SYSTIMESTAMP);
 INSERT INTO MessagePrivate (MessagePrivateId, SenderId, RecipientId, MessageText, MessageTime) VALUES (811, 111, 101, 'Ana here, can you help me with the payment?', SYSTIMESTAMP);
 INSERT INTO MessagePrivate (MessagePrivateId, SenderId, RecipientId, MessageText, MessageTime) VALUES (812, 101, 111, 'Sure Ana, what do you need?', SYSTIMESTAMP);
+
+--Queries 
+--1. Average of payment by user by group ordered alphabetically
+SELECT AppUser.FirstName,AppUser.LastName, AppGroup.GroupName, AVG(Amount) AS AveragePayment
+from Payment
+Join AppUser ON Payment.PayerId = AppUser.AppUserId
+left Join AppGroup ON Payment.AppGroupId = AppGroup.AppGroupId
+group by FirstName,LastName, GroupName
+ORDER BY AppUser.FirstName, AppUser.LastName, AppGroup.GroupName;
+--3. Retrieve the total number of group messages, the total number of private
+--messages, and the overall total of all messages sent by each user. List the first name and
+--the last name of the users, and order the overall total of messages sent in descending
+--order
+SELECT AppUser.FirstName, AppUser.LastName, 
+		(SELECT COUNT(*) 
+		 FROM MessageGroup 
+		 WHERE MessageGroup.SenderId = AppUser.AppUserId) AS TotalGroupMessages,
+		(SELECT COUNT(*) MessagePrivate.senderID=AppUser.AppUserId
+		 FROM MessagePrivate 
+		 WHERE MessagePrivate.SenderId = AppUser.AppUserId) AS TotalPrivateMessages,
+		((SELECT COUNT(*) 
+		 FROM MessageGroup 
+		 WHERE MessageGroup.SenderId = AppUser.AppUserId) +
+		 (SELECT COUNT(*) 
+		 FROM MessagePrivate 
+		 WHERE MessagePrivate.SenderId = AppUser.AppUserId)) AS OverallTotalMessages
+		from AppUser
+		WHERE OverallTotalMessages > 0
+		 Order By OverallTotalMessages DESC 
