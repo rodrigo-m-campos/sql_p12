@@ -3,6 +3,7 @@ CREATE TABLE AppUser (
 	AppUserId NUMBER NOT NULL,
 	FirstName VARCHAR2(30) NOT NULL,
 	LastName VARCHAR2(30) NOT NULL,
+	Email VARCHAR2()
 	'Alias' VARCHAR2(30),
 	Phone VARCHAR2(30),
 	constraint AppUser_PK PRIMARY KEY (AppUserId));
@@ -31,9 +32,10 @@ CREATE TABLE Expense (
 	CurrencyId NUMBER NOT NULL,
 	ExpenseDate DATE NOT NULL,
 	RegistrationDate DATE NOT NULL,
+	--This gives problems
 	DivisionType VARCHAR2(30) NOT NULL DEFAULT ('Equal'),
 	CategoryId NUMBER NOT NULL,
-	constraint Expense_PK PRIMARY KEY (ExpenseId)
+	constraint Expense_PK PRIMARY KEY (ExpenseId),
 	constraint CH_Division CHECK (DivisionType IN ('Equal', 'Shared', 'Exact')));
 
 CREATE TABLE ParticipationExpense (
@@ -47,7 +49,8 @@ CREATE TABLE 'Category' (
 	CategoryId NUMBER NOT NULL,
 	AppGroupId NUMBER NOT NULL,
 	CategoryName VARCHAR(30) NOT NULL,
-	constraint Category_PK PRIMARY KEY (CategoryId));
+	constraint Category_PK PRIMARY KEY (CategoryId),
+	constraint Category_FK UNIQUE (AppGroupId, CategoryName));
 
 CREATE TABLE Currency (
 	CurrencyId NUMBER NOT NULL,
@@ -61,7 +64,8 @@ CREATE TABLE ExchangeRate (
 	ExchangeDate DATE NOT NULL,
 	--Here we should determine decimals (or try a different solution)
 	Rate NUMBER(10,2),
-	constraint ExchangeRate_PK PRIMARY KEY (RateId));
+	constraint ExchangeRate_PK PRIMARY KEY (RateId),
+	constraint ExchangeRate_FK UNIQUE (CurrencyFrom, CurrencyTo, ExchangeDate));
 
 CREATE TABLE Payment (
 	PaymentId NUMBER NOT NULL,
@@ -358,4 +362,12 @@ SELECT AVG(Expense.Amount), Expense.ExpenseDate
 FROM Expense
 WHERE ExpenseDate >= TODATE(2025-06-01) AND ExpenseDate <= TODATE(2025-08-30)
 GROUP BY AppGroup.AppGroupId, Category.CategoryId
+
+--4. In progress
+SELECT AppGroup.GroupName, AppUser.FirstName, AppUser.LastName
+FROM AppGroup, AppUser
+WHERE AppGroup.AppGroupId, AppUser.AppUserId IN
+	(SELECT Payment.AppGroupId, Payment.PayerId, Payment.PayeeId
+	FROM Payment
+	WHERE Payment.Amount > (SELECT AVG(Payment.Amount) FROM Payment))
 
