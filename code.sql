@@ -351,3 +351,11 @@ INSERT INTO MessagePrivate (MessagePrivateId, SenderId, RecipientId, MessageText
 INSERT INTO MessagePrivate (MessagePrivateId, SenderId, RecipientId, MessageText, MessageTime) VALUES (810, 110, 109, 'Rodrigo, yes I did.', SYSTIMESTAMP);
 INSERT INTO MessagePrivate (MessagePrivateId, SenderId, RecipientId, MessageText, MessageTime) VALUES (811, 111, 101, 'Ana here, can you help me with the payment?', SYSTIMESTAMP);
 INSERT INTO MessagePrivate (MessagePrivateId, SenderId, RecipientId, MessageText, MessageTime) VALUES (812, 101, 111, 'Sure Ana, what do you need?', SYSTIMESTAMP);
+
+--Queries
+--2. Obtain the average amount of the expenses for the months of June, July, and August of the year 2025. 
+SELECT AVG(Expense.Amount), Expense.ExpenseDate
+FROM Expense
+WHERE ExpenseDate >= TODATE(2025-06-01) AND ExpenseDate <= TODATE(2025-08-30)
+GROUP BY AppGroup.AppGroupId, Category.CategoryId
+
