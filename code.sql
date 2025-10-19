@@ -133,7 +133,19 @@ ALTER TABLE MessagePrivate ADD CONSTRAINT MessagePrivate_fk0 FOREIGN KEY (AppGro
 ALTER TABLE MessagePrivate ADD CONSTRAINT MessagePrivate_fk1 FOREIGN KEY (AppGroupId, SenderId) REFERENCES Membership(AppGroupId, AppUserId);
 ALTER TABLE MessagePrivate ADD CONSTRAINT MessagePrivate_fk2 FOREIGN KEY (AppGroupId, RecipientId) REFERENCES Membership(AppGroupId, AppUserId);
 
---Insertions
+-- TABLE DROPS
+DROP TABLE MessagePrivate;
+DROP TABLE MessageGroup;
+DROP TABLE Notification;
+DROP TABLE Payment;
+DROP TABLE ExchangeRate;
+DROP TABLE ParticipationExpense;
+DROP TABLE Expense;
+DROP TABLE Category;
+DROP TABLE Membership;
+DROP TABLE AppGroup;
+DROP TABLE AppUser;
+DROP TABLE Currency;
 --INSERTIONS
 --CURRENCY
 INSERT INTO Currency (CurrencyId, CurrencyName) VALUES (1, 'EUR');
