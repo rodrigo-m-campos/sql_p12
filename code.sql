@@ -389,10 +389,21 @@ SELECT AppUser.FirstName, AppUser.LastName,
 		WHERE OverallTotalMessages > 0
 		 Order By OverallTotalMessages DESC 
 
---4. In progress
-SELECT AppGroup.GroupName, AppUser.FirstName, AppUser.LastName
-FROM AppGroup, AppUser
-WHERE AppGroup.AppGroupId, AppUser.AppUserId IN
-	(SELECT Payment.AppGroupId, Payment.PayerId, Payment.PayeeId
-	FROM Payment
-	WHERE Payment.Amount > (SELECT AVG(Payment.Amount) FROM Payment))
+--4. Retrieve information about payments above the average of their group
+SELECT AppGroup.GroupName, PAYER.FirstName, PAYER.LastName, PAYEE.FirstName, PAYEE.LastName, Payment.PaymentDate, Payment.Amount
+FROM Payment
+JOIN AppUser AS PAYER ON Payment.PayerId = PAYER.AppUserId
+JOIN AppUser AS PAYEE ON Payment.PayeeId = PAYEE.AppUserId
+JOIN AppGroup ON Payment.AppGroupId = AppGroup.AppGroupId
+WHERE Payment.Amount > (SELECT AVG(Payment.Amount FROM Payment WHERE Payment.AppGroupId = AppGroup.AppGroupId))
+ORDER BY AppGroup.GroupName, Payment.Amount DESC
+
+
+--6. Obtain owners and admins with unread notifications (and amount)
+SELECT AppUser.FirstName, AppUser.LastName, AppGroup.GroupName, COUNT (Notification.NotificationId)
+FROM AppUser
+JOIN Notification ON AppUser.AppuserId = Notification.AppUserId
+JOIN Membership ON AppUser.AppUserId = Membership.AppUserId
+JOIN AppGroup ON Membership.AppGroupId = AppGroup.AppGroupId
+WHERE Notification.IsRead = 'N' AND (Membership.MemberRole = 'Owner' OR Membership.MemberRole = 'Admin')
+
