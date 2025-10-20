@@ -361,9 +361,11 @@ group by FirstName,LastName, GroupName
 ORDER BY AppUser.FirstName, AppUser.LastName, AppGroup.GroupName;
 
 --2. Obtain the average amount of the expenses for the months of June, July, and August of the year 2025. 
-SELECT AVG(Expense.Amount), Expense.ExpenseDate
+SELECT AVG(Expense.Amount)
 FROM Expense
-WHERE ExpenseDate >= TODATE(2025-06-01) AND ExpenseDate <= TODATE(2025-08-30)
+JOIN AppGroup ON Expense.AppGroupId = AppGroup.AppGroupId
+JOIN Category ON Expense.CategoryId = Category.CategoryId
+WHERE (ExpenseDate BETWEEN TO_DATE('2025-06-01','YYYY-MM-DD') AND TO_DATE('2025-08-31', 'YYYY-MM-DD'))
 GROUP BY AppGroup.AppGroupId, Category.CategoryId
 
 --3. Retrieve the total number of group messages, the total number of private
