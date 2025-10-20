@@ -319,21 +319,21 @@ INSERT INTO ParticipationExpense (ExpenseId, AppUserId, AppGroupId, Amount) VALU
 -- Expense 410 (400.00 EUR / Group 208) - Missing, added as 200.00 each
 INSERT INTO ParticipationExpense (ExpenseId, AppUserId, AppGroupId, Amount) VALUES (410, 109, 208, 200.00);
 INSERT INTO ParticipationExpense (ExpenseId, AppUserId, AppGroupId, Amount) VALUES (410, 110, 208, 200.00);
----PAYMENT
-INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (501, 101, 102, 201, 75.00, 1, TO_DATE('2023-01-22','YYYY-MM-DD'), 'Reimbursement for utilities');
-INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (502, 103, 101, 201, 400.00, 1, TO_DATE('2023-02-05','YYYY-MM-DD'), 'Rent payment');
-INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (503, 104, 102, 202, 150.00, 1, TO_DATE('2023-02-25','YYYY-MM-DD'), 'Trip expenses');
-INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (504, 105, 101, 203, 200.00, 1, TO_DATE('2023-03-15','YYYY-MM-DD'), 'Office supplies reimbursement');
-INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (505, 107, 101, 204, 400.00, 6, TO_DATE('2025-06-10','YYYY-MM-DD'), 'Flight reimbursement');
-INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (506, 108, 107, 205, 300.00, 3, TO_DATE('2025-08-18','YYYY-MM-DD'), 'Accommodation reimbursement');
-INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (507, 108, 108, 206, 120.00, 2, TO_DATE('2022-11-05','YYYY-MM-DD'), 'Dinner reimbursement');
-INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (508, 109, 109, 207, 950.00, 1, TO_DATE('2023-04-22','YYYY-MM-DD'), 'Rent payment');
-INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (509, 110, 109, 208, 200.00, 1, TO_DATE('2023-05-26','YYYY-MM-DD'), 'Ski pass reimbursement');
-INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (510, 107, 105, 210, 300.00, 4, TO_DATE('2024-07-20','YYYY-MM-DD'), 'Travel expenses reimbursement');
+--- PAYMENT
+INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (501, 101, 102, 201, 75.00, 'EUR', TO_DATE('2023-01-22','YYYY-MM-DD'), 'Reimbursement for utilities');
+INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (502, 103, 101, 201, 400.00, 'EUR', TO_DATE('2023-02-05','YYYY-MM-DD'), 'Rent payment');
+INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (503, 104, 102, 202, 150.00, 'EUR', TO_DATE('2023-02-25','YYYY-MM-DD'), 'Trip expenses');
+INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (504, 105, 101, 203, 200.00, 'EUR', TO_DATE('2023-03-15','YYYY-MM-DD'), 'Office supplies reimbursement');
+INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (505, 106, 101, 204, 400.00, 'JPY', TO_DATE('2025-06-10','YYYY-MM-DD'), 'Flight reimbursement');
+INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (506, 108, 107, 205, 300.00, 'GBP', TO_DATE('2025-08-18','YYYY-MM-DD'), 'Accommodation reimbursement');
+INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (507, 108, 101, 206, 120.00, 'USD', TO_DATE('2022-11-05','YYYY-MM-DD'), 'Dinner reimbursement'); 
+INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (508, 109, 102, 207, 950.00, 'EUR', TO_DATE('2023-04-22','YYYY-MM-DD'), 'Rent payment'); 
+INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (509, 110, 109, 208, 200.00, 'EUR', TO_DATE('2023-05-26','YYYY-MM-DD'), 'Ski pass reimbursement');
+INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (510, 107, 105, 210, 300.00, 'LYD', TO_DATE('2024-07-20','YYYY-MM-DD'), 'Travel expenses reimbursement');
 ---NOTIFICATION
-INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationText, NotificationTime, IsRead) VALUES (601, 501, 102, 'You have received a payment of 75.00 EUR from Mohammed Smith.', SYSTIMESTAMP, 'N');
-INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationText, NotificationTime, IsRead) VALUES (602, 502, 101, 'You have received a payment of 400.00 EUR from Mel Gibson.', SYSTIMESTAMP, 'N');
-INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationText, NotificationTime, IsRead) VALUES (603, 503, 102, 'You have received a payment of 150.00 EUR from Diana Prince.', SYSTIMESTAMP, 'N');
+INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationText, NotificationTime, IsRead) VALUES (601, 501, 102, 'You have received a payment of 75.00 EUR from Mohammed Smith.', TO_DATE('2024-07-20','YYYY-MM-DD'), 'N');
+INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationText, NotificationTime, IsRead) VALUES (602, 502, 101, 'You have received a payment of 400.00 EUR from Mel Gibson.', TO_DATE('2024-05-20','YYYY-MM-DD'), 'N');
+INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationText, NotificationTime, IsRead) VALUES (603, 503, 102, 'You have received a payment of 150.00 EUR from Diana Prince.', TO_DATE('2025-04-10','YYYY-MM-DD'), 'N');
 INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationText, NotificationTime, IsRead) VALUES (604, 504, 101, 'You have received a payment of 200.00 EUR from Clark Kent.', SYSTIMESTAMP, 'N');
 INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationText, NotificationTime, IsRead) VALUES (605, 505, 101, 'You have received a payment of 400.00 JPY from Majid Ben Ghet.', SYSTIMESTAMP, 'N');
 INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationText, NotificationTime, IsRead) VALUES (606, 506, 107, 'You have received a payment of 300.00 GBP from Derek Trotter.', SYSTIMESTAMP, 'N');
@@ -353,28 +353,31 @@ INSERT INTO MessageGroup (MessageGroupId, AppGroupId, SenderId, MessageText, Mes
 INSERT INTO MessageGroup (MessageGroupId, AppGroupId, SenderId, MessageText, MessageTime) VALUES (709, 209, 111, 'Gym session tomorrow?', SYSTIMESTAMP);
 INSERT INTO MessageGroup (MessageGroupId, AppGroupId, SenderId, MessageText, MessageTime) VALUES (710, 210, 107, 'Summer trip planning!', SYSTIMESTAMP);
 --MESSAGEPRIVATE
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (801, 201, 101, 102, 'Hey Jimmy, can you pay me back ASAP?', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (802, 201, 102, 101, 'Hi Mohammed, I am good thank You.', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (803, 202, 103, 104, 'Mel here, ready for the trip?', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (804, 202, 104, 103, 'Diana, absolutely! Can''t wait!', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (805, 203, 105, 106, 'Clark here, did you make the payment?', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (806, 203, 106, 105, 'Peter, almost done. Will send it over soon.', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (807, 205, 107, 108, 'Majid here, are you joining the Japan trip?', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (808, 205, 108, 107, 'Derek, yes I am! Looking forward to it.', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (809, 208, 109, 110, 'Harry here, did you book the accommodation?', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (810, 208, 110, 109, 'Rodrigo, yes I did.', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (811, 209, 111, 101, 'Ana here, can you help me with the payment?', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (812, 209, 101, 111, 'Sure Ana, what do you need?', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (813, 201, 101, 102, 'Reminder: utilities bill is due tomorrow.', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (814, 201, 102, 103, 'Can you confirm the amount for the dinner?', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (815, 202, 104, 101, 'Packing list for the trip: don''t forget chargers and adapters.', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (816, 204, 101, 106, 'Have you arranged the transfer for the flight?', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (817, 205, 107, 108, 'Do you want to split the accommodation evenly?', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (818, 206, 108, 108, 'Quick note to self: confirm Friday plans.', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (819, 208, 110, 109, 'Did you renew the ski pass or should I handle it?', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (820, 210, 107, 105, 'Are you coming to the planning meeting next week?', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (821, 203, 105, 105, 'Invoice for office supplies attached.', SYSTIMESTAMP);
-INSERT INTO MessagePrivate (MessagePrivateId, AppGroupId, SenderId, RecipientId, MessageText, MessageTime) VALUES (822, 201, 103, 101, 'Thanks for covering my part, I''ll reimburse next week.', SYSTIMESTAMP);
+
+--The Messageprivateid and the MessageTime are auto-generated 
+
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (801, 201, 101, 102, 'Hey Jimmy, can you pay me back ASAP?');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (802, 201, 102, 101, 'Hi Mohammed, I am good thank You.');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (803, 202, 103, 104, 'Mel here, ready for the trip?');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (804, 202, 104, 103, 'Diana, absolutely! Can''t wait!');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (805, 203, 105, 106, 'Clark here, did you make the payment?');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (806, 203, 106, 105, 'Peter, almost done. Will send it over soon.');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (807, 205, 107, 108, 'Majid here, are you joining the Japan trip?');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (808, 205, 108, 107, 'Derek, yes I am! Looking forward to it.');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (809, 208, 109, 110, 'Harry here, did you book the accommodation?');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (810, 208, 110, 109, 'Rodrigo, yes I did.');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (811, 209, 111, 101, 'Ana here, can you help me with the payment?');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (812, 209, 101, 111, 'Sure Ana, what do you need?');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (813, 201, 101, 102, 'Reminder: utilities bill is due tomorrow.');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (814, 201, 102, 103, 'Can you confirm the amount for the dinner?');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (815, 202, 104, 101, 'Packing list for the trip: don''t forget chargers and adapters.');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (816, 204, 101, 106, 'Have you arranged the transfer for the flight?');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (817, 205, 107, 108, 'Do you want to split the accommodation evenly?');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (818, 206, 108, 108, 'Quick note to self: confirm Friday plans.');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (819, 208, 110, 109, 'Did you renew the ski pass or should I handle it?');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (820, 210, 107, 105, 'Are you coming to the planning meeting next week?');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (821, 203, 105, 105, 'Invoice for office supplies attached.');
+INSERT INTO MessagePrivate (AppGroupId, SenderId, RecipientId, MessageText) VALUES (822, 201, 103, 101, 'Thanks for covering my part, I''ll reimburse next week.');
 
 --- Queries
 -- 3.1 Obtain the average amount spent by each user in each group. The result must
@@ -450,4 +453,46 @@ group by AU.FirstName, AU.LastName, AG.GroupName
 HAVING COUNT(N.NotificationId) > 0
 
 
-   
+--- TRIGGERS
+--4.1 when  a member leaves the group his balance should be settled to zero   
+Create settle_balance_trigger
+Before Update OF LeavingDate ON Membership
+FOR EACH ROW
+Declare 
+	balance NUMBER(10,2);
+Begin
+	IF :NEW.LeavingDate IS NOT NULL THEN
+		SELECT COALESCE(SUM(PE.Amount),0)  --DEBT AMOUNT
+		+ COALESCE(SUM(E.Amount),0)  --EXPENSE MADE AMOUNT
+		- COALESCE(SUM(PR.Amount),0)   -- PAYMENTS RECEIVED AMOUNT
+		COALESCE(SUM(PP.Amount),0) -- PAYMENTS MADE AMOUNT
+		INTO balance
+		FROM membership M
+		LEFT JOIN Expense E ON E.AppUserId = M.AppUserId and E.AppGroupId = :M.AppGroupId
+		LEFT JOIN participationexpense PE ON M.AppUserId = PE.AppUserId AND PE.AppGroupId = M.AppGroupId
+		LEFT JOIN payment PP ON P.PayerId = M.AppUserId AND P.AppGroupId = M.AppGroupId
+		LEFT JOIN payment PR ON P.PayeeId = M.AppUserId AND P.AppGroupId = M.AppGroupId
+		WHERE PE.AppUserId = :OLD.AppUserId
+
+		IF balance != 0 THEN
+			Raise_application_error(-20001, 'Member cannot leave the group with a non-zero balance.');
+		END IF;
+	END IF;
+End;
+
+---coalesce was used above to handle null values in case there are no expenses/payments/participations for the user so it returns 0 instead of null
+
+--4.3 When sending a private message set automatically the message Id (as a
+--sequence) and the message date (current date).
+--- sequence for MessagePrivateId
+Create sequence MessagePrivateSeq
+START WITH 800
+INCREMENT BY 1;
+--- trigger for setting MessagePrivateId and MessageTime
+Create OR REPLACE TRIGGER set_messageprivate_fields
+Before Insert ON MessagePrivate
+FOR EACH ROW
+Begin
+	:NEW.MessagePrivateId := MessagePrivateSeq.NEXTVAL;
+	:NEW.MessageTime := SYSTIMESTAMP;
+End;
