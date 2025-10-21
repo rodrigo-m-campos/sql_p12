@@ -352,7 +352,7 @@ INSERT INTO MessagePrivate (MessagePrivateId, SenderId, RecipientId, MessageText
 INSERT INTO MessagePrivate (MessagePrivateId, SenderId, RecipientId, MessageText, MessageTime) VALUES (812, 101, 111, 'Sure Ana, what do you need?', SYSTIMESTAMP);
 
 --Queries 
---1. Average of payment by user by group ordered alphabetically
+--3.1. Average of payment by user by group ordered alphabetically
 SELECT AppUser.FirstName,AppUser.LastName, AppGroup.GroupName, AVG(Amount) AS AveragePayment
 from Payment
 Join AppUser ON Payment.PayerId = AppUser.AppUserId
@@ -360,15 +360,15 @@ left Join AppGroup ON Payment.AppGroupId = AppGroup.AppGroupId
 group by FirstName,LastName, GroupName
 ORDER BY AppUser.FirstName, AppUser.LastName, AppGroup.GroupName;
 
---2. Obtain the average amount of the expenses for the months of June, July, and August of the year 2025. 
-SELECT AVG(Expense.Amount)
+--3.2. Obtain the average amount of the expenses for the months of June, July, and August of the year 2025. 
+SELECT AVG(Expense.Amount), AppGroup.GroupName, Category.CategoryName
 FROM Expense
 JOIN AppGroup ON Expense.AppGroupId = AppGroup.AppGroupId
 JOIN Category ON Expense.CategoryId = Category.CategoryId
 WHERE (ExpenseDate BETWEEN TO_DATE('2025-06-01','YYYY-MM-DD') AND TO_DATE('2025-08-31', 'YYYY-MM-DD'))
-GROUP BY AppGroup.AppGroupId, Category.CategoryId
+GROUP BY AppGroup.GroupName, Category.CategoryName
 
---3. Retrieve the total number of group messages, the total number of private
+--3.3. Retrieve the total number of group messages, the total number of private
 --messages, and the overall total of all messages sent by each user. List the first name and
 --the last name of the users, and order the overall total of messages sent in descending
 --order
@@ -389,7 +389,7 @@ SELECT AppUser.FirstName, AppUser.LastName,
 		WHERE OverallTotalMessages > 0
 		 Order By OverallTotalMessages DESC 
 
---4. Retrieve information about payments above the average of their group
+--3.4. Retrieve information about payments above the average of their group
 SELECT AppGroup.GroupName, PAYER.FirstName, PAYER.LastName, PAYEE.FirstName, PAYEE.LastName, Payment.PaymentDate, Payment.Amount
 FROM Payment
 JOIN AppUser AS PAYER ON Payment.PayerId = PAYER.AppUserId
@@ -399,7 +399,7 @@ WHERE Payment.Amount > (SELECT AVG(Payment.Amount FROM Payment WHERE Payment.App
 ORDER BY AppGroup.GroupName, Payment.Amount DESC
 
 
---6. Obtain owners and admins with unread notifications (and amount)
+--3.6. Obtain owners and admins with unread notifications (and amount)
 SELECT AppUser.FirstName, AppUser.LastName, AppGroup.GroupName, COUNT (Notification.NotificationId)
 FROM AppUser
 JOIN Notification ON AppUser.AppuserId = Notification.AppUserId
@@ -407,3 +407,25 @@ JOIN Membership ON AppUser.AppUserId = Membership.AppUserId
 JOIN AppGroup ON Membership.AppGroupId = AppGroup.AppGroupId
 WHERE Notification.IsRead = 'N' AND (Membership.MemberRole = 'Owner' OR Membership.MemberRole = 'Admin')
 
+--Triggers
+--4.2.
+CREATE TRIGGER MembershipCheck
+BEFORE INSERT ON Payment
+FOR EACH ROW
+BEGIN
+	IF NOT EXISTS (
+	SELECT 1
+	FROM Membership m1
+	JOIN Membership m2 ON m2.AppGroupId = m1.AppGroupId AND m1.AppUserId = :NEW.PayerId AND m2.AppUserId = :NEW.PayeeId
+	HAVING m1.AppGroupId = m2.AppGroupId
+	) THEN
+		raise_application_error(-20001, 'Payer and payee do not belong to the same group.')
+	END IF;
+END;
+	
+--4.4.
+CREATE TRIGGER ExchangeRateExists
+BEFORE INSERT ON Payment
+IF NOT (:NEW.Currency = (SELECT AG.BaseCurrencyId FROM AppGroup AG) OR (:NEW.PaymentDate = SELECT(ER.ExchangeDate FROM ExchangeRate ER) AND 
+	(SELECT(ER.CurrencyFrom FROM EchangeRate ER JOIN AppGroup AG ON AG.BaseCurrencyId = ER.CurrencyTo WHERE ER.CurrencyFrom = Payment.Currency)) THEN
+	raise_application_error(-20001, 'There is no exchange rate for that currency.')
