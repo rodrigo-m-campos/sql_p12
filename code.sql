@@ -366,7 +366,7 @@ FROM Expense
 JOIN AppGroup ON Expense.AppGroupId = AppGroup.AppGroupId
 JOIN Category ON Expense.CategoryId = Category.CategoryId
 WHERE (ExpenseDate BETWEEN TO_DATE('2025-06-01','YYYY-MM-DD') AND TO_DATE('2025-08-31', 'YYYY-MM-DD'))
-GROUP BY AppGroup.GroupName, Category.CategoryName
+GROUP BY AppGroup.GroupName, Category.CategoryName;
 
 --3.3. Retrieve the total number of group messages, the total number of private
 --messages, and the overall total of all messages sent by each user. List the first name and
@@ -400,13 +400,14 @@ ORDER BY AppGroup.GroupName, Payment.Amount DESC
 
 
 --3.6. Obtain owners and admins with unread notifications (and amount)
-SELECT AppUser.FirstName, AppUser.LastName, AppGroup.GroupName, COUNT (Notification.NotificationId)
+SELECT AppUser.FirstName, AppUser.LastName, AppGroup.GroupName, COUNT(Notification.NotificationId)
 FROM AppUser
 JOIN Notification ON AppUser.AppuserId = Notification.AppUserId
 JOIN Membership ON AppUser.AppUserId = Membership.AppUserId
 JOIN AppGroup ON Membership.AppGroupId = AppGroup.AppGroupId
 WHERE Notification.IsRead = 'N' AND (Membership.MemberRole = 'Owner' OR Membership.MemberRole = 'Admin')
-
+GROUP BY AppUser.FirstName, AppUser.LastName, AppGroup.GroupName;
+	
 --Triggers
 --4.2.
 CREATE TRIGGER MembershipCheck
@@ -426,6 +427,10 @@ END;
 --4.4.
 CREATE TRIGGER ExchangeRateExists
 BEFORE INSERT ON Payment
-IF NOT (:NEW.Currency = (SELECT AG.BaseCurrencyId FROM AppGroup AG) OR (:NEW.PaymentDate = SELECT(ER.ExchangeDate FROM ExchangeRate ER) AND 
-	(SELECT(ER.CurrencyFrom FROM EchangeRate ER JOIN AppGroup AG ON AG.BaseCurrencyId = ER.CurrencyTo WHERE ER.CurrencyFrom = Payment.Currency)) THEN
-	raise_application_error(-20001, 'There is no exchange rate for that currency.')
+FOR EACH ROW
+BEGIN
+	IF NOT (:NEW.Currency = (SELECT AG.BaseCurrencyId FROM AppGroup AG) OR (:NEW.PaymentDate = (SELECT ER.ExchangeDate FROM ExchangeRate ER)) AND 
+		(SELECT ER.CurrencyFrom FROM ExchangeRate ER JOIN AppGroup AG ON AG.BaseCurrencyId = ER.CurrencyTo WHERE ER.CurrencyFrom = :NEW.Currency)) THEN
+		raise_application_error(-20001, 'There is no exchange rate for that currency.');
+	END IF;
+END;
