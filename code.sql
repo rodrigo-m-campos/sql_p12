@@ -370,6 +370,7 @@ Join Payment P ON AU.AppUserId = P.PayerId
 Join AppGroup AG ON P.AppGroupId = AG.AppGroupId
 Group By AU.FirstName, AU.LastName, AG.GroupName
 Order By AU.FirstName ASC, AU.LastName ASC, AG.GroupName ASC;
+
 -- 3.2 For each group and category obtain the average amount of the expenses for the
 ---    months of June, July, and August of the year 2025. The average value must be calculated
 ---    in the default currency of the group.
@@ -383,7 +384,7 @@ Join ExchangeRate ER ON E.CurrencyId = ER.CurrencyFrom
 					 AND ER.ExchangeDate = E.ExpenseDate 
 Where EXTRACT(MONTH FROM E.ExpenseDate) IN (6, 7, 8)
   AND EXTRACT(YEAR FROM E.ExpenseDate) = 2025
-group by g.GroupName, C.CategoryName;
+group by AG.GroupName, C.CategoryName;
 
 ---3.3
 Select AU.FirstName, AU.lastName,
@@ -397,7 +398,7 @@ Group By AU.FirstName, AU.LastName
 order by TotalMessagesSent DESC;
 
 ---3.4
-Select AG.GroupName,AU,.FirstName, AU.LastName,P.Amount, P.PaymentDate,
+Select AG.GroupName, AU.FirstName AS PayerFirstName, AU.LastName AS PayerLastName, AU2.FirstName AS PayeeFirstName, AU2.LastName AS PayeeLastName, P.Amount, P.PaymentDate,
 	   AG.GroupName
 From Payment P
 Join AppGroup AG ON P.AppGroupId = AG.AppGroupId
@@ -408,8 +409,9 @@ where P.amount > (
 	From Payment
 	Where AppGroupId = AG.AppGroupId
 )
-group by AG.GroupName, AU.FirstName, AU.LastName, P.Amount, P.PaymentDate
+group by AG.GroupName, AU.FirstName, AU.LastName, AU2.FirstName, AU2.LastName, P.Amount, P.PaymentDate
 order by AG.GroupName, P.Amount DESC;
+
 ---3.5
 Select AU.Firstname, AU.LastName, AG.GroupName, MAX(E.Amount),MIN(E.Amount)
 From Expense E
@@ -419,6 +421,7 @@ Join Category C ON E.CategoryId = C.CategoryId
 where C.CategoryName = 'Invoices'
 group by AU.FirstName, AU.LastName, AG.GroupName
 order by AU.FirstName, AU.LastName, AG.GroupName;
+
 ---3.6
 select (AU.FirstName||' '|| AU.LastName), AG.GroupName,COUNT(N.NotificationId) AS UnreadNotifications
 From AppUser AU
@@ -433,6 +436,7 @@ HAVING COUNT(N.NotificationId) > 0;
 
 
 --- TRIGGERS
+--4.1.
 CREATE OR REPLACE TRIGGER check_balance_before_leaving
 BEFORE UPDATE OF LeavingDate ON Membership
 FOR EACH ROW
@@ -481,18 +485,22 @@ END;
 ---coalesce was used above to handle null values in case there are no expenses/payments/participations for the user so it returns 0 instead of null
 
 --4.2.
-CREATE TRIGGER MembershipCheck
+CREATE OR REPLACE TRIGGER MembershipCheck
 BEFORE INSERT ON Payment
 FOR EACH ROW
+DECLARE
+    v_count NUMBER;
 BEGIN
-	IF NOT EXISTS (
-	SELECT 1
-	FROM Membership m1
-	JOIN Membership m2 ON m2.AppGroupId = m1.AppGroupId AND m1.AppUserId = :NEW.PayerId AND m2.AppUserId = :NEW.PayeeId
-	HAVING m1.AppGroupId = m2.AppGroupId
-	) THEN
-		raise_application_error(-20001, 'Payer and payee do not belong to the same group.')
-	END IF;
+    SELECT COUNT(*)
+    INTO v_count
+    FROM Membership m1
+    JOIN Membership m2 ON m2.AppGroupId = m1.AppGroupId
+    WHERE m1.AppUserId = :NEW.PayerId
+      AND m2.AppUserId = :NEW.PayeeId;
+
+    IF v_count = 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Payer and payee do not belong to the same group.');
+    END IF;
 END;
 
 --4.3 When sending a private message set automatically the message Id (as a
@@ -512,10 +520,10 @@ End;
 
 --4.4 
 
-CREATE TRIGGER ExchangeRateExists
+CREATE OR REPLACE TRIGGER ExchangeRateExists
 BEFORE INSERT ON Payment
 for each row
----When the 2 conditions are met we aise the error, if either one isn't met then all is good.
+---When the 2 conditions are met we raise the error, if either one isn't met then all is good.
 when (:new.CurrencyId != (SELECT BaseCurrencyId FROM AppGroup WHERE AppGroupId = :new.AppGroupId) 
       And (select count (*)
 	from ExchangeRate
