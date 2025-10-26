@@ -1,4 +1,5 @@
 --Create the tables
+--FUCK U RODRIGO
 CREATE TABLE AppUser (
 	AppUserId NUMBER NOT NULL,
 	FirstName VARCHAR2(30) NOT NULL,
