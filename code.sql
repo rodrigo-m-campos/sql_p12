@@ -1,4 +1,3 @@
-
 --Create the tables
 CREATE TABLE AppUser (
 	AppUserId NUMBER NOT NULL,
@@ -113,7 +112,6 @@ ALTER TABLE Expense ADD CONSTRAINT Expense_fk2 FOREIGN KEY (CurrencyId) REFERENC
 ALTER TABLE Expense ADD CONSTRAINT Expense_fk3 FOREIGN KEY (CategoryId) REFERENCES Category(CategoryId);
 
 ALTER TABLE ParticipationExpense ADD CONSTRAINT ParticipationExpense_fk0 FOREIGN KEY (AppUserId, AppGroupId) REFERENCES Membership(AppUserId, AppGroupId);
---ALTER TABLE ParticipationExpense ADD CONSTRAINT ParticipationExpense_fk1 FOREIGN KEY (AppGroupId) REFERENCES Membership(AppGroupId);
 ALTER TABLE ParticipationExpense ADD CONSTRAINT ParticipationExpense_fk2 FOREIGN KEY (ExpenseId) REFERENCES Expense(ExpenseId);
 
 ALTER TABLE Category ADD CONSTRAINT Category_fk0 FOREIGN KEY (AppGroupId) REFERENCES AppGroup(AppGroupId);
@@ -322,7 +320,7 @@ INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationTe
 INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationText, NotificationTime, IsRead) VALUES (609, 509, 109, 'You have received a payment of 200.00 EUR from Rodrigo Campos.', TO_TIMESTAMP('2023-05-26 19:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'N');
 INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationText, NotificationTime, IsRead) VALUES (610, 510, 105, 'You have received a payment of 300.00 LYD from Majid Ben Ghet.', TO_TIMESTAMP('2024-07-20 10:10:00', 'YYYY-MM-DD HH24:MI:SS'), 'N');
 INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationText, NotificationTime, IsRead) VALUES (611,511, 109, 'You have received a payment of 50.00 EUR from Jimmy Page.', TO_TIMESTAMP('2023-04-25 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'N');
-INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationText, NotificationTime, IsRead) VALUES (615, 515, 101, 'You have received a payment of 25.00 EUR from Jimmy Page.', TO_TIMESTAMP('2023-02-10 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'N');
+INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationText, NotificationTime, IsRead) VALUES (615, 512, 101, 'You have received a payment of 25.00 EUR from Jimmy Page.', TO_TIMESTAMP('2023-02-10 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'N');
 
 --- MESSAGEGROUP
 INSERT INTO MessageGroup (MessageGroupId, AppGroupId, SenderId, MessageText, MessageTime) VALUES (701, 201, 101, 'Hello Family, welcome to the expenses group', TO_TIMESTAMP('2023-01-15 12:00:00', 'YYYY-MM-DD HH24:MI:SS'));
