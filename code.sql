@@ -308,6 +308,7 @@ INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId
 INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (509, 110, 109, 208, 200.00, 'EUR', TO_DATE('2023-05-26','YYYY-MM-DD'), 'Ski pass reimbursement');
 INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (510, 107, 105, 210, 300.00, 'LYD', TO_DATE('2024-07-20','YYYY-MM-DD'), 'Travel expenses reimbursement');
 INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (511,102, 109, 207, 50.00, 'EUR', TO_DATE('2023-04-25','YYYY-MM-DD'), 'Utilities share');
+INSERT INTO Payment (PaymentId, PayerId, PayeeId, AppGroupId, Amount, CurrencyId, PaymentDate, Note) VALUES (512, 102, 101, 201, 25.00, 'EUR', TO_DATE('2023-02-10','YYYY-MM-DD'), 'Movie night');
 
 --- NOTIFICATION
 INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationText, NotificationTime, IsRead) VALUES (601, 501, 102, 'You have received a payment of 75.00 EUR from Mohammed Smith.', TO_TIMESTAMP('2023-01-22 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'N');
@@ -321,6 +322,7 @@ INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationTe
 INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationText, NotificationTime, IsRead) VALUES (609, 509, 109, 'You have received a payment of 200.00 EUR from Rodrigo Campos.', TO_TIMESTAMP('2023-05-26 19:30:00', 'YYYY-MM-DD HH24:MI:SS'), 'N');
 INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationText, NotificationTime, IsRead) VALUES (610, 510, 105, 'You have received a payment of 300.00 LYD from Majid Ben Ghet.', TO_TIMESTAMP('2024-07-20 10:10:00', 'YYYY-MM-DD HH24:MI:SS'), 'N');
 INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationText, NotificationTime, IsRead) VALUES (611,511, 109, 'You have received a payment of 50.00 EUR from Jimmy Page.', TO_TIMESTAMP('2023-04-25 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'N');
+INSERT INTO Notification (NotificationId, PaymentId, RecipientId, NotificationText, NotificationTime, IsRead) VALUES (615, 515, 101, 'You have received a payment of 25.00 EUR from Jimmy Page.', TO_TIMESTAMP('2023-02-10 10:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'N');
 
 --- MESSAGEGROUP
 INSERT INTO MessageGroup (MessageGroupId, AppGroupId, SenderId, MessageText, MessageTime) VALUES (701, 201, 101, 'Hello Family, welcome to the expenses group', TO_TIMESTAMP('2023-01-15 12:00:00', 'YYYY-MM-DD HH24:MI:SS'));
