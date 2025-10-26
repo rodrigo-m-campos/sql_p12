@@ -550,8 +550,4 @@ BEGIN
                 'No exchange rate exists for the payment currency to the group base currency on the payment date.');
         END IF;
     END IF;
-
-EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-        RAISE_APPLICATION_ERROR(-20003, 'AppGroup not found for the given AppGroupId.');
 END;
