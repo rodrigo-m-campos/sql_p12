@@ -522,14 +522,36 @@ End;
 
 CREATE OR REPLACE TRIGGER ExchangeRateExists
 BEFORE INSERT ON Payment
-for each row
----When the 2 conditions are met we raise the error, if either one isn't met then all is good.
-when (:new.CurrencyId != (SELECT BaseCurrencyId FROM AppGroup WHERE AppGroupId = :new.AppGroupId) 
-      And (select count (*)
-	from ExchangeRate
-	where CurrencyFrom = :new.CurrencyId and CurrencyTo = (SELECT BaseCurrencyId FROM AppGroup WHERE AppGroupId = :new.AppGroupId)
-	 and :new.PaymentDate!=ER.ExchangeDate ) = 0
-	)
+FOR EACH ROW
+DECLARE
+    v_base_currency_id  VARCHAR2(3);
+    v_exchange_count    NUMBER;
 BEGIN
-	raise_application_error(-20002, 'No exchange rate exists for the payment currency to the group base currency on the payment date.');
+    -- Step 1: Get the group's base currency
+    SELECT BaseCurrencyId
+    INTO v_base_currency_id
+    FROM AppGroup
+    WHERE AppGroupId = :NEW.AppGroupId;
+
+    -- Step 2: Only proceed with check if currency is not base. (otherwise we are fine)
+    IF :NEW.CurrencyId <> v_base_currency_id THEN
+        
+        -- Step 3: Check if a valid exchange rate exists on PaymentDate
+        SELECT COUNT(*)
+        INTO v_exchange_count
+        FROM ExchangeRate ER
+        WHERE ER.CurrencyFrom = :NEW.CurrencyId
+          AND ER.CurrencyTo = v_base_currency_id
+          AND ER.ExchangeDate = :NEW.PaymentDate; 
+
+        -- Step 4: If NO exchange rate exists, raise error
+        IF v_exchange_count = 0 THEN
+            RAISE_APPLICATION_ERROR(-20002, 
+                'No exchange rate exists for the payment currency to the group base currency on the payment date.');
+        END IF;
+    END IF;
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RAISE_APPLICATION_ERROR(-20003, 'AppGroup not found for the given AppGroupId.');
 END;
