@@ -413,7 +413,7 @@ group by AG.GroupName, AU.FirstName, AU.LastName, AU2.FirstName, AU2.LastName, P
 order by AG.GroupName, P.Amount DESC;
 
 ---3.5
-Select AU.Firstname, AU.LastName, AG.GroupName, MAX(E.Amount),MIN(E.Amount)
+Select AU.Firstname, AU.LastName, AG.GroupName, MAX(E.Amount), MIN(E.Amount)
 From Expense E
 Join AppUser AU ON E.AppUserId = AU.AppUserId
 Join AppGroup AG ON E.AppGroupId = AG.AppGroupId
@@ -423,15 +423,15 @@ group by AU.FirstName, AU.LastName, AG.GroupName
 order by AU.FirstName, AU.LastName, AG.GroupName;
 
 ---3.6
-SELECT AppUser.FirstName, AppUser.LastName, AppGroup.GroupName, COUNT(*)AS Notifications_unread
-	FROM MEMBERSHIP
-	JOIN AppUser ON AppUser.AppUserId = Membership.AppUserId
-	JOIN AppGroup ON AppGroup.AppGroupId = Membership.AppGroupId
-	JOIN Notification1 ON Notification1.RecipientId = AppUser.AppUserId
-	WHERE Notification1.IsRead = 'N' 
-	AND Membership.LeavingDate IS NULL 
-	AND Membership.MemberRole IN ('Owner','Admin')
-	GROUP BY AppUser.AppUserId, AppUser.FirstName, AppUser.LastName, AppGroup.AppGroupId, AppGroup.GroupName;
+SELECT AU.FirstName, AU.LastName, AG.GroupName, COUNT(*) AS NotificationsUnread
+	FROM Membership M
+	JOIN AppUser AU ON AU.AppUserId = M.AppUserId
+	JOIN AppGroup AG ON AG.AppGroupId = M.AppGroupId
+	JOIN Notification N ON N.RecipientId = AU.AppUserId
+	WHERE N.IsRead = 'N' 
+	AND M.LeavingDate IS NULL 
+	AND M.MemberRole IN ('Owner','Admin')
+	GROUP BY AU.AppUserId, AU.FirstName, AU.LastName, AG.AppGroupId, AG.GroupName;
 
 
 --- TRIGGERS
