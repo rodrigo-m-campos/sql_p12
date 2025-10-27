@@ -423,16 +423,15 @@ group by AU.FirstName, AU.LastName, AG.GroupName
 order by AU.FirstName, AU.LastName, AG.GroupName;
 
 ---3.6
-select (AU.FirstName||' '|| AU.LastName), AG.GroupName,COUNT(N.NotificationId) AS UnreadNotifications
-From AppUser AU
-Join Notification N ON AU.AppUserId = N.RecipientId
-Join Membership M ON AU.AppUserId = M.AppUserId
-Join AppGroup AG ON M.AppGroupId = AG.AppGroupId
-WHERE m.LeavingDate IS NULL
-  AND m.MemberRole IN ('OWNER', 'ADMIN')
-  AND n.IsRead = 'N'
-group by AU.FirstName, AU.LastName, AG.GroupName
-HAVING COUNT(N.NotificationId) > 0;
+SELECT AppUser.FirstName, AppUser.LastName, AppGroup.GroupName, COUNT(*)AS Notifications_unread
+	FROM MEMBERSHIP
+	JOIN AppUser ON AppUser.AppUserId = Membership.AppUserId
+	JOIN AppGroup ON AppGroup.AppGroupId = Membership.AppGroupId
+	JOIN Notification1 ON Notification1.RecipientId = AppUser.AppUserId
+	WHERE Notification1.IsRead = 'N' 
+	AND Membership.LeavingDate IS NULL 
+	AND Membership.MemberRole IN ('Owner','Admin')
+	GROUP BY AppUser.AppUserId, AppUser.FirstName, AppUser.LastName, AppGroup.AppGroupId, AppGroup.GroupName;
 
 
 --- TRIGGERS
