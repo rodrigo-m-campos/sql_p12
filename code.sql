@@ -481,7 +481,7 @@ BEGIN
         END IF;
     END IF;
 END;
-
+/
 ---coalesce was used above to handle null values in case there are no expenses/payments/participations for the user so it returns 0 instead of null
 
 --4.2.
@@ -502,7 +502,8 @@ BEGIN
         RAISE_APPLICATION_ERROR(-20001, 'Payer and payee do not belong to the same group.');
     END IF;
 END;
-
+/
+	
 --4.3 When sending a private message set automatically the message Id (as a
 --sequence) and the message date (current date).
 --- sequence for MessagePrivateId
@@ -517,9 +518,9 @@ Begin
 	:NEW.MessagePrivateId := MessagePrivateSeq.NEXTVAL;
 	:NEW.MessageTime := SYSTIMESTAMP;
 End;
-
+/
+	
 --4.4 
-
 CREATE OR REPLACE TRIGGER ExchangeRateExists
 BEFORE INSERT ON Payment
 FOR EACH ROW
@@ -551,3 +552,4 @@ BEGIN
         END IF;
     END IF;
 END;
+/
